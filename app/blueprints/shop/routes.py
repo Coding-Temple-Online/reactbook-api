@@ -32,7 +32,7 @@ def edit_product(id):
     p.from_dict(data)
     db.session.commit()
     return jsonify(p.to_dict())
-    
+    #    ;l;Skdl;AS
 @shop.route('/product/delete/<int:id>', methods=['DELETE'])
 def delete_product(id):
     """
