@@ -44,9 +44,9 @@ def delete_product(id):
 # SHOP ROUTES
 
 # SHOP CATEGORY ROUTES
-@shop.route('/categorys', methods=['GET'])
+@shop.route('/categories', methods=['GET'])
 def categories():
-    return jsonify([p.to_dict() for p in Category.query.all()])
+    return jsonify([c.to_dict() for c in Category.query.all()])
 
 @shop.route('/category/<int:id>', methods=['GET'])
 def single_category(id):

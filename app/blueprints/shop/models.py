@@ -74,6 +74,7 @@ class Category(db.Model):
             'name': self.name,
             'products': [p.to_dict() for p in Product.query.filter_by(category_id=self.id).all()]
         }
+        return data
 
 
 # class Cart(db.Model):
