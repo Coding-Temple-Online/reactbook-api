@@ -83,3 +83,9 @@ def delete_category(id):
     p = Category.query.get(id)
     p.remove()
     return jsonify([p.to_dict() for p in Category.query.all()])
+
+@shop.route('/test', methods=['POST'])
+def test():
+    data = request.json
+    print(data)
+    return "Success", 201
