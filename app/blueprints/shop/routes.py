@@ -1,6 +1,8 @@
 from .import bp as shop
 from .models import Product, Category
 from flask import jsonify, request
+from app.auth import token_auth, basic_auth
+from app import db
 
 @shop.route('/products', methods=['GET'])
 def products():
@@ -15,6 +17,7 @@ def single_product(id):
     return jsonify(p.to_dict())
 
 @shop.route('/product/create', methods=['POST'])
+@token_auth.login_required
 def create_product():
     data = request.json
     post = Product()
@@ -23,6 +26,7 @@ def create_product():
     return jsonify(post.to_dict()), 201
 
 @shop.route('product/edit/<int:id>', methods=['PUT'])
+@token_auth.login_required
 def edit_product(id):
     """
     [PUT/PATCH] /api/product/edit/<id>
@@ -32,8 +36,9 @@ def edit_product(id):
     p.from_dict(data)
     db.session.commit()
     return jsonify(p.to_dict())
-    #    ;l;Skdl;AS
+
 @shop.route('/product/delete/<int:id>', methods=['DELETE'])
+@token_auth.login_required
 def delete_product(id):
     """
     [DELETE] /api/product/delete/<id>
@@ -57,6 +62,7 @@ def single_category(id):
     return jsonify(p.to_dict())
 
 @shop.route('/category/create', methods=['POST'])
+@token_auth.login_required
 def create_category():
     data = request.json
     c = Category()
@@ -65,6 +71,7 @@ def create_category():
     return jsonify(c.to_dict()), 201
 
 @shop.route('category/edit/<int:id>', methods=['PUT'])
+@token_auth.login_required
 def edit_category(id):
     """
     [PUT/PATCH] /api/category/edit/<id>
@@ -76,6 +83,7 @@ def edit_category(id):
     return jsonify(p.to_dict())
     
 @shop.route('/category/delete/<int:id>', methods=['DELETE'])
+@token_auth.login_required
 def delete_category(id):
     """
     [DELETE] /api/category/delete/<id>

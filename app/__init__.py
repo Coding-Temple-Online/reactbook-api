@@ -26,6 +26,6 @@ def create_app(config_obj=Config):
     app.register_blueprint(authentication_bp)
 
     with app.app_context():
-        from .import routes
+        from .import routes, tokens
 
     return app

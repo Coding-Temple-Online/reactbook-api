@@ -1,5 +1,6 @@
+import base64, os
 from app import db
-from datetime import datetime as dt
+from datetime import datetime as dt, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import login
 from app.blueprints.blog.models import BlogPost
@@ -30,6 +31,26 @@ class User(UserMixin, db.Model):
         backref=db.backref('followers', lazy='dynamic'),
         lazy='dynamic'
         )
+    token = db.Column(db.String, index=True, unique=True)
+    token_expiration = db.Column(db.DateTime)
+
+    def get_token(self, expires_in=5000):
+        current_time = dt.utcnow()
+        if self.token and self.token_expiration > current_time + timedelta(seconds=60):
+            return self.token
+        self.token = base64.b64encode(os.urandom(24))
+        self.token_expiration = current_time + timedelta(seconds=expires_in)
+        db.session.add(self)
+        return self.token
+
+    def revoke_token(self):
+        self.token_expiration = dt.utcnow() - timedelta(seconds=1)
+
+    def check_token(token):
+        u = User.query.filter_by(token=token).first()
+        if u is None or u.token_expiration < dt.utcnow():
+            return None
+        return u
 
     def followed_posts(self):
         followed = BlogPost.query.join(
